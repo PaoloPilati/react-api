@@ -1,34 +1,41 @@
-import { useState, useEffect } from "react"
-import axios from "axios"
-import ActressCard from "./components/ActressCard"
+import { useState, useEffect } from "react";
+import axios from "axios";
+import ActressCard from "./ActressCard";
+
+const actressesUrl = "https://lanciweb.github.io/demo/api/actresses/";
 
 function Main() {
+  const [actresses, setActresses] = useState([]);
 
-  const [actresses, setActresses] = useState([])
-
-  useEffect(() => {
-
-    axios
-      .get("https://lanciweb.github.io/demo/api/actresses/")
+  // funzione per fare fetch
+  const getActresses = () => {
+    axios.get(actressesUrl)
       .then((response) => {
-        console.log(response.data)
-        setActresses(response.data)
+        console.log("Dati API:", response.data);
+        setActresses(response.data);
       })
+      .catch((error) => {
+        console.error("Errore nella fetch:", error);
+      });
+  }
 
-  }, [])
+  // useEffect per chiamare la fetch al mount
+  useEffect(() => {
+    getActresses();
+  }, []); // [] → esegue solo al primo rendering
 
   return (
-    <main>
-
-      {actresses.map((actress, index) => (
-        <ActressCard
-          key={index}
-          actress={actress}
-        />
-      ))}
-
+    <main className="container my-5">
+      <div className="row">
+        {actresses.map((actress) => (
+          <ActressCard
+            key={actress.id}
+            actress={actress}
+          />
+        ))}
+      </div>
     </main>
-  )
+  );
 }
 
-export default Main
+export default Main;
